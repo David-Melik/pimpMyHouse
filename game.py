@@ -145,9 +145,10 @@ def slideChapter(chapter, pageReview):
         timeLeft = max(10 - int(time.time() - start_time), 0)
         if timeLeft != previous_time_left:
             show_boxNoUpdate((500, 80), (1400, 1125))
-            show_messageNoUpdate(f"Countdown {timeLeft} s", 1500, white)
+            show_messageNoUpdate(f"Countdown {timeLeft}s", 1500, white)
             previous_time_left = timeLeft  # Update the previous time for comparison
             pygame.display.update()
+    show_box(box_size, box_position)
 
 
 def slideCard(chapter, pageReview):
@@ -180,13 +181,13 @@ def slideCard(chapter, pageReview):
         while player_claim == [[], [], [], []]:
             # show how much card left
             show_message(str(num_items) + " items left", 10, white)
-            show_message("image numero" + str(i), 300, white)
+            show_message("image numero " + str(i), 300, white)
             show_message(str(names[j]), 800, white)
             timeLeft = max(10 - int(time.time() - start_time), 0)
 
             if timeLeft != previous_time_left:
                 show_boxNoUpdate((100, 50), (1830, 1125))
-                show_messageNoUpdate(f"{timeLeft} s", 1830, white)
+                show_messageNoUpdate(f"{timeLeft}s", 1830, white)
                 previous_time_left = timeLeft  # Update the previous time for comparison
             if timeLeft == 0:
                 break
@@ -215,6 +216,7 @@ def slideCard(chapter, pageReview):
                             player1Score.append(names[j])
                             j = j + 1
                             timeLeft = 0
+
         previous_time_left = None
         start_time = time.time()
         timeLeft = 10
@@ -222,9 +224,9 @@ def slideCard(chapter, pageReview):
             quitGame()
             timeLeft = max(10 - int(time.time() - start_time), 0)
             if timeLeft != previous_time_left:
-                show_boxNoUpdate((100, 50), (1830, 1125))
+                show_boxNoUpdate((500, 50), (1400, 1125))
                 show_messageNoUpdate(
-                    f"Time left before next item {timeLeft} s", 1400, white
+                    f"Time left before next item {timeLeft}s", 1400, white
                 )
                 previous_time_left = timeLeft  # Update the previous time for comparison
                 pygame.display.update()
@@ -236,19 +238,18 @@ def showResult():
     return
 
 
-# slideReady(1)
-# slideReady(2)
+slideReady(1)
+slideReady(2)
 
 
-# for i in range(1,7): # for 7 chapter
-i = 0
-pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
-chapter = list(components.keys())[i]
+for i in range(0, 6):  # for 7 chapter
+    pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
+    chapter = list(components.keys())[i]
 
-# slideChapter(chapter, pageReview[i])
-slideCard(chapter, pageReview[i])
-# review
-# all item
+    slideChapter(chapter, pageReview[i])
+    slideCard(chapter, pageReview[i])
+    # review
+    # all item
 
 showResult()
 
