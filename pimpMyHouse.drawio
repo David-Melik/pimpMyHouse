@@ -27,6 +27,62 @@
         <mxCell id="uOxBx3G_vbGTZe_jV91H-5" value="End show result" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="300" y="1120" width="225" height="150" as="geometry" />
         </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="uOxBx3G_vbGTZe_jV91H-6" target="uOxBx3G_vbGTZe_jV91H-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-6" value="ChapterReview = pages&lt;div&gt;ChapterName = &quot;Kitchen&quot;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="810" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="uOxBx3G_vbGTZe_jV91H-7" target="uOxBx3G_vbGTZe_jV91H-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="uOxBx3G_vbGTZe_jV91H-7" target="uOxBx3G_vbGTZe_jV91H-20">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="820" y="1065" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-7" value="For i in range of kitchen element" style="triangle;whiteSpace=wrap;html=1;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="830" y="1000" width="190" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-9" value="Show card&lt;div&gt;time = 10s&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="1150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="uOxBx3G_vbGTZe_jV91H-14" target="uOxBx3G_vbGTZe_jV91H-9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="1315" />
+              <mxPoint x="1020" y="1130" />
+              <mxPoint x="1110" y="1130" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="uOxBx3G_vbGTZe_jV91H-17" target="uOxBx3G_vbGTZe_jV91H-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="925" y="980" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="uOxBx3G_vbGTZe_jV91H-14" target="uOxBx3G_vbGTZe_jV91H-17">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1280" y="1315" />
+              <mxPoint x="1280" y="1220" />
+              <mxPoint x="1275" y="1220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-14" value="First player to get element&amp;nbsp;&lt;br&gt;or time finish" style="triangle;whiteSpace=wrap;html=1;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="1260" width="180" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-17" value="player save the card for him" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1215" y="1120" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uOxBx3G_vbGTZe_jV91H-20" value="E" style="triangle;whiteSpace=wrap;html=1;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="780" y="1140" width="80" height="60" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>

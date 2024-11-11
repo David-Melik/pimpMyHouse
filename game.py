@@ -1,6 +1,8 @@
 import pygame
 import time
 
+from components import components
+
 # Initialize Pygame
 pygame.init()
 
@@ -9,7 +11,7 @@ pygame.init()
 gameDisplay = pygame.display.set_mode(
     (1920, 1200)
 )  # Set the screen size (width x height)
-pygame.display.set_caption("Game Intro")  # Set the window caption
+pygame.display.set_caption("Pimp My House")  # Set the window caption
 
 green = (0, 152, 5)
 red = (219, 63, 16)
@@ -20,6 +22,11 @@ box_size = (1920, 120)
 
 # Define font for text
 font = pygame.font.Font(None, 50)  # You can adjust the size (50) as per your preference
+
+player1Score = []
+player2Score = []
+player3Score = []
+player4Score = []
 
 
 def show_message(message, x_pos, color):
@@ -32,6 +39,23 @@ def show_message(message, x_pos, color):
 def show_box(size, position):
     pygame.draw.rect(gameDisplay, black, pygame.Rect(position, size))
     pygame.display.update()
+
+
+def show_messageNoUpdate(message, x_pos, color):
+    # Render the text as an image (surface)
+    text = font.render(message, True, color)
+    gameDisplay.blit(text, (x_pos, 1125))
+
+
+def show_boxNoUpdate(size, position):
+    pygame.draw.rect(gameDisplay, black, pygame.Rect(position, size))
+
+
+def quitGame():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:  # Handle quit event
+            pygame.quit()
+            quit()
 
 
 def slideReady(i):
@@ -98,9 +122,137 @@ def slideReady(i):
     show_box(box_size, box_position)
 
 
-# Call the intro function to start the intro screen
-slideReady(1)
-slideReady(2)
+def slideChapter(chapter, pageReview):
+
+    # Initialize image Review
+    image_filename = "image/" + str(pageReview) + ".jpg"
+    image = pygame.image.load(image_filename)
+    gameDisplay.blit(image, (0, 0))
+    pygame.display.update()
+
+    # Initialize info about the Chapter
+    items = components[chapter]
+    names = [item["name"] for item in items]
+    num_items = len(items)
+
+    show_message("You have " + str(num_items) + " items available", 10, white)
+
+    previous_time_left = None
+    start_time = time.time()
+    timeLeft = 10
+    while timeLeft > 0:
+        quitGame()
+        timeLeft = max(10 - int(time.time() - start_time), 0)
+        if timeLeft != previous_time_left:
+            show_boxNoUpdate((500, 80), (1400, 1125))
+            show_messageNoUpdate(f"Countdown {timeLeft} s", 1500, white)
+            previous_time_left = timeLeft  # Update the previous time for comparison
+            pygame.display.update()
+
+
+def slideCard(chapter, pageReview):
+    # Initialize player setup
+    player_claim = [[], [], [], []]  # Track readiness for each player
+    positionPlayer = [680, 680, 680, 680]
+    player_keys = {
+        pygame.K_a: "Player 1",  # 'A' for Player 1
+        pygame.K_z: "Player 2",  # 'Z' for Player 2
+        pygame.K_e: "Player 3",  # 'E' for Player 3
+        pygame.K_r: "Player 4",  # 'R' for Player 4
+    }
+
+    # Initialize info about the Chapter
+    items = components[chapter]
+    names = [item["name"] for item in items]
+    num_items = len(items)
+    j = 0
+    for i in range(pageReview + 1, pageReview + num_items):
+
+        # Initialize image Review
+        image_filename = "image/" + str(i) + ".jpg"
+        image = pygame.image.load(image_filename)
+        gameDisplay.blit(image, (0, 0))
+        pygame.display.update()
+
+        ####Card item
+        start_time = time.time()  # Start the timer for 30 seconds
+        previous_time_left = None
+        while player_claim == [[], [], [], []]:
+            # show how much card left
+            show_message(str(num_items) + " items left", 10, white)
+            show_message(str(i) + " debug", 300, white)
+            show_message(str(names[j]) + " debug", 500, white)
+            timeLeft = max(10 - int(time.time() - start_time), 0)
+
+            if timeLeft != previous_time_left:
+                show_boxNoUpdate((100, 50), (1830, 1125))
+                show_messageNoUpdate(f"{timeLeft} s", 1830, white)
+                previous_time_left = timeLeft  # Update the previous time for comparison
+            if timeLeft == 0:
+                break
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:  # Handle quit event
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if (
+                        event.key in player_keys
+                    ):  # Check if a player pressed a valid key
+                        player_index = list(player_keys.keys()).index(
+                            event.key
+                        )  # Get the player index
+                        if (
+                            len(player_claim[player_index]) == 0
+                        ):  # If the player hasn't pressed yet
+
+                            gameDisplay.blit(image, (0, 0))
+                            show_box(box_size, box_position)
+                            player_claim[player_index].append(1)
+                            show_message(
+                                f"{player_keys[event.key]} claim the item!",
+                                positionPlayer[player_index],
+                                green,
+                            )  # Show confirmation message
+                            player1Score.append(names[j])
+                            j = j + 1
+                            timeLeft = 0
+        previous_time_left = None
+        start_time = time.time()
+        timeLeft = 10
+        while timeLeft > 0:
+            quitGame()
+            player_claim == [[], [], [], []]
+            timeLeft = max(10 - int(time.time() - start_time), 0)
+            if timeLeft != previous_time_left:
+                show_boxNoUpdate((100, 50), (1830, 1125))
+                show_messageNoUpdate(
+                    f"Time left before next item {timeLeft} s", 1400, white
+                )
+                previous_time_left = timeLeft  # Update the previous time for comparison
+                pygame.display.update()
+
+
+def showResult():
+    return
+
+
+# slideReady(1)
+# slideReady(2)
+
+
+# for i in range(1,7): # for 7 chapter
+i = 0
+pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
+chapter = list(components.keys())[i]
+
+# slideChapter(chapter, pageReview[i])
+slideCard(chapter, pageReview[i])
+# review
+# all item
+
+showResult()
+
 
 """
 start_time = time.time()  # Start the timer for 10 seconds
