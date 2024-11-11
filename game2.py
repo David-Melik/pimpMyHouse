@@ -25,7 +25,7 @@ box_size = (1920, 120)
 # Define font for text
 font = pygame.font.Font(None, 50)  # You can adjust the size (50) as per your preference
 
-playerScore = [[], [], [], []]
+playerScore = [[], []]
 
 
 def show_message(message, x_pos, color):
@@ -64,13 +64,11 @@ def quitGame():
 
 
 def slideReady(i):
-    player_ready = [[], [], [], []]  # Track readiness for each player
-    positionPlayer = [50, 505, 960, 1415]
+    player_ready = [[], []]  # Track readiness for each player
+    positionPlayer = [50, 960]
     player_keys = {
         pygame.K_a: "Player 1",  # 'A' for Player 1
         pygame.K_z: "Player 2",  # 'Z' for Player 2
-        pygame.K_e: "Player 3",  # 'E' for Player 3
-        pygame.K_r: "Player 4",  # 'R' for Player 4
     }
 
     image_filename = "image/" + str(i) + ".jpg"
@@ -80,7 +78,7 @@ def slideReady(i):
     )  # Draw the image on the screen at coordinates (0, 0)
     pygame.display.update()
 
-    while player_ready != [[1], [1], [1], [1]]:  # Check if everyone is ready
+    while player_ready != [[1], [1]]:  # Check if everyone is ready
         # Show instructions for players if they haven't pressed their button
         show_message(str(i), 10, white)
 
@@ -158,13 +156,11 @@ def slideChapter(chapter, pageReview):
 
 def slideCard(chapter, pageReview):
     # Initialize player setup
-    player_claim = [[0], [0], [0], [0]]  # Track readiness for each player
-    positionPlayer = [50, 50, 50, 50]
+    player_claim = [[0], [0]]  # Track readiness for each player
+    positionPlayer = [50, 50]
     player_keys = {
         pygame.K_a: "Player 1",  # 'A' for Player 1
         pygame.K_z: "Player 2",  # 'Z' for Player 2
-        pygame.K_e: "Player 3",  # 'E' for Player 3
-        pygame.K_r: "Player 4",  # 'R' for Player 4
     }
 
     # Initialize info about the Chapter
@@ -245,7 +241,7 @@ def slideCard(chapter, pageReview):
                             pygame.time.wait(
                                 2000
                             )  # Add a small delay for smooth updates
-        if player_claim == [[1], [1], [1], [1]]:  # if everyone has already a item
+        if player_claim == [[1], [1]]:  # if everyone has already a item
             i = pageReview + num_items
 
             show_box(box_size, box_position)
@@ -323,10 +319,9 @@ def showResult():
     for i, player_cards in enumerate(playerScore):
         player_score = calculate_score_for_player(player_cards)
         scores.append(player_score)  # Add the score to the scores list
-        print(f"Score du Joueur {i + 1}: {player_score}")
-        show_messageNoUpdate(
-            f"Score du Joueur {i + 1}: {player_score}", position, white
-        )
+        print(f"Player {i + 1}'s Score: {player_score}")
+        show_messageNoUpdate(f"Player {i + 1}'s Score: {player_score}", position, white)
+
         position = position + 500  # Adjust space between player score messages
         pygame.display.update()
 
@@ -336,11 +331,12 @@ def showResult():
 
     # Display the winner's message
     show_messagePosition(
-        f"Le gagnant est le Joueur {winner_index + 1} avec un score de {max_score}!",
+        f"The winner is Player {winner_index + 1} with a score of {max_score}!",
         540,
         480,
         green,
     )
+
     pygame.display.update()
 
     # Wait for the player to close the window
