@@ -1,51 +1,116 @@
 import pygame
 import time
-from components import components
 
 # Initialize Pygame
 pygame.init()
-screen = pygame.display.set_mode((1920, 1080))
 
 
-for component_name, options in components.items():
-    for option in options:
-        option["image_obj"] = pygame.image.load(
-            option["image"]
-        )  # Load image and store in "image_obj"
+# Set up the display
+gameDisplay = pygame.display.set_mode(
+    (1920, 1200)
+)  # Set the screen size (width x height)
+pygame.display.set_caption("Game Intro")  # Set the window caption
 
-# Game variables
-players = [0, 0, 0, 0]  # Scores for 4 players
-selected_components = {
-    player: {} for player in range(4)
-}  # Store chosen components for each player
+green = (0, 152, 5)
+red = (219, 63, 16)
+black = (0, 0, 0)
+white = (255, 255, 255)
+box_position = (0, 1080)  # Top-left corner of the box
+box_size = (1920, 120)
 
-
-def choose_component(player, component_name, choice_index):
-    """
-    Choose an item for a specific player, marking it as claimed if available.
-    """
-    choice = components[component_name][choice_index]
-    if not choice["claimed"]:
-        selected_components[player][component_name] = choice
-        choice["claimed"] = True  # Mark as claimed
+# Define font for text
+font = pygame.font.Font(None, 50)  # You can adjust the size (50) as per your preference
 
 
-def display_component_one_by_one(component_name, options):
-    """
-    Display each item in `options` one by one, allowing players to choose within 10 seconds.
-    """
-    for i, option in enumerate(options):
-        if option["claimed"]:
-            continue  # Skip if item is already claimed
+def show_message(message, x_pos, color):
+    # Render the text as an image (surface)
+    text = font.render(message, True, color)
+    gameDisplay.blit(text, (x_pos, 1125))
+    pygame.display.update()  # Update the display to show the message
 
-        start_time = time.time()  # Start the timer for 10 seconds
-        while time.time() - start_time < 10:  # Display each item for 10 seconds
-            screen.fill((255, 255, 255))  # Clear screen with white background
+
+def show_box(size, position):
+    pygame.draw.rect(gameDisplay, black, pygame.Rect(position, size))
+    pygame.display.update()
+
+
+def slideReady(i):
+    player_ready = [[], [], [], []]  # Track readiness for each player
+    positionPlayer = [50, 505, 960, 1415]
+    player_keys = {
+        pygame.K_a: "Player 1",  # 'A' for Player 1
+        pygame.K_z: "Player 2",  # 'Z' for Player 2
+        pygame.K_e: "Player 3",  # 'E' for Player 3
+        pygame.K_r: "Player 4",  # 'R' for Player 4
+    }
+
+    image_filename = "image/" + str(i) + ".jpg"
+    image = pygame.image.load(image_filename)
+    gameDisplay.blit(
+        image, (0, 0)
+    )  # Draw the image on the screen at coordinates (0, 0)
+    pygame.display.update()
+
+    while player_ready != [[1], [1], [1], [1]]:  # Check if everyone is ready
+        # Show instructions for players if they haven't pressed their button
+        show_message(str(i), 10, white)
+
+        for j in range(0, 4):  # 0, 1, 2, 3 for the 4 players
+            # Check if the player hasn't pressed their button yet (ready list is empty)
+            if player_ready[j] == []:
+                # Display message for the corresponding player, based on index `j`
+                show_message(
+                    f"Press button for {player_keys[list(player_keys.keys())[j]]}",
+                    positionPlayer[j],
+                    red,
+                )
+            elif player_ready[j] == [1]:  # If the player is already ready
+                # Show that the player is ready
+                show_message(
+                    f"{player_keys[list(player_keys.keys())[j]]} is ready!",
+                    positionPlayer[j],
+                    green,
+                )
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:  # Handle quit event
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key in player_keys:  # Check if a player pressed a valid key
+                    player_index = list(player_keys.keys()).index(
+                        event.key
+                    )  # Get the player index
+                    if (
+                        len(player_ready[player_index]) == 0
+                    ):  # If the player hasn't pressed yet
+
+                        gameDisplay.blit(image, (0, 0))
+                        show_box(box_size, box_position)
+                        player_ready[player_index].append(1)  # Mark the player as ready
+                        show_message(
+                            f"{player_keys[event.key]} is ready!",
+                            positionPlayer[player_index],
+                            green,
+                        )  # Show confirmation message
+
+        pygame.time.wait(250)  # Add a small delay for smooth updates
+    show_box(box_size, box_position)
+
+
+# Call the intro function to start the intro screen
+slideReady(1)
+slideReady(2)
+
+"""
+start_time = time.time()  # Start the timer for 10 seconds
+while time.time() - start_time < 10:  # Display each item for 10 seconds
+   screen.fill((255, 255, 255))  # Clear screen with white background
 
             # Display current option's image and stats
-            screen.blit(
-                option["image_obj"], (100, 150)
-            )  # Adjust position for each image
+   screen.blit(
+   option["image_obj"], (100, 150)
+   )  # Adjust position for each image
             font = pygame.font.Font(None, 36)
             text = font.render(
                 f"{option['name']} (Aesthetics: {option['aesthetics']}, Durability: {option['durability']})",
@@ -77,5 +142,5 @@ def display_component_one_by_one(component_name, options):
                         choose_component(3, component_name, i)
                         return
 
-
+"""
 pygame.quit()
