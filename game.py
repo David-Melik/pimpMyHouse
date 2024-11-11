@@ -153,7 +153,7 @@ def slideChapter(chapter, pageReview):
 def slideCard(chapter, pageReview):
     # Initialize player setup
     player_claim = [[], [], [], []]  # Track readiness for each player
-    positionPlayer = [680, 680, 680, 680]
+    positionPlayer = [50, 50, 50, 50]
     player_keys = {
         pygame.K_a: "Player 1",  # 'A' for Player 1
         pygame.K_z: "Player 2",  # 'Z' for Player 2
@@ -174,14 +174,14 @@ def slideCard(chapter, pageReview):
         gameDisplay.blit(image, (0, 0))
         pygame.display.update()
 
-        ####Card item
+        # Card item
         start_time = time.time()  # Start the timer for 30 seconds
         previous_time_left = None
         while player_claim == [[], [], [], []]:
             # show how much card left
             show_message(str(num_items) + " items left", 10, white)
-            show_message(str(i) + " debug", 300, white)
-            show_message(str(names[j]) + " debug", 500, white)
+            show_message("image numero" + str(i), 300, white)
+            show_message(str(names[j]), 800, white)
             timeLeft = max(10 - int(time.time() - start_time), 0)
 
             if timeLeft != previous_time_left:
@@ -192,9 +192,7 @@ def slideCard(chapter, pageReview):
                 break
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:  # Handle quit event
-                    pygame.quit()
-                    quit()
+                quitGame()
                 if event.type == pygame.KEYDOWN:
                     if (
                         event.key in player_keys
@@ -222,7 +220,6 @@ def slideCard(chapter, pageReview):
         timeLeft = 10
         while timeLeft > 0:
             quitGame()
-            player_claim == [[], [], [], []]
             timeLeft = max(10 - int(time.time() - start_time), 0)
             if timeLeft != previous_time_left:
                 show_boxNoUpdate((100, 50), (1830, 1125))
@@ -231,6 +228,8 @@ def slideCard(chapter, pageReview):
                 )
                 previous_time_left = timeLeft  # Update the previous time for comparison
                 pygame.display.update()
+        show_box(box_size, box_position)
+        player_claim = [[], [], [], []]
 
 
 def showResult():
