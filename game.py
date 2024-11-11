@@ -1,39 +1,12 @@
 import pygame
 import time
+from components import components
 
 # Initialize Pygame
 pygame.init()
 screen = pygame.display.set_mode((1920, 1080))
 
-# Define paths for component images
-components = {
-    "kitchen": [
-        {
-            "name": "Marble Kitchen",
-            "aesthetics": 9,
-            "durability": 8,
-            "image": "1.jpg",
-            "claimed": False,
-        },
-        {
-            "name": "Ceramic Kitchen",
-            "aesthetics": 7,
-            "durability": 6,
-            "image": "2.jpg",
-            "claimed": False,
-        },
-        {
-            "name": "Wooden Kitchen",
-            "aesthetics": 8,
-            "durability": 7,
-            "image": "3.jpg",
-            "claimed": False,
-        },
-    ],
-    # Additional components like walls, flooring, etc. with their images
-}
 
-# Load images for each component option
 for component_name, options in components.items():
     for option in options:
         option["image_obj"] = pygame.image.load(
@@ -93,37 +66,16 @@ def display_component_one_by_one(component_name, options):
                         choose_component(
                             0, component_name, i
                         )  # Player 1 claims the item
-                        continue  # Exit the loop to move to the next item
+                        continue
                     elif event.key == pygame.K_z:  # Player 2 presses 'Z'
                         choose_component(1, component_name, i)
-                        return  # Exit the loop to move to the next item
+                        return
                     elif event.key == pygame.K_e:  # Player 3 presses 'E'
                         choose_component(2, component_name, i)
-                        return  # Exit the loop to move to the next item
+                        return
                     elif event.key == pygame.K_r:  # Player 4 presses 'R'
                         choose_component(3, component_name, i)
-                        return  # Exit the loop to move to the next item
+                        return
 
-        # If no one claims the item within 10 seconds, move on to the next item
-        # (no additional code needed, as the loop will naturally continue to the next item)
-
-
-# Run one round for each component, displaying items one by one
-for component_name, options in components.items():
-    display_component_one_by_one(component_name, options)
-
-
-# Scoring after all rounds
-def calculate_score(player_components):
-    score = 0
-    for part, details in player_components.items():
-        score += details["aesthetics"] + details["durability"]
-    return score
-
-
-# Calculate and display final scores
-for i in range(4):
-    players[i] = calculate_score(selected_components[i])
-print("Player scores:", players)
 
 pygame.quit()
