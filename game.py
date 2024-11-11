@@ -1,6 +1,8 @@
 import pygame
 import time
 
+from pygame.time import delay
+
 from components import components
 
 # Initialize Pygame
@@ -23,10 +25,7 @@ box_size = (1920, 120)
 # Define font for text
 font = pygame.font.Font(None, 50)  # You can adjust the size (50) as per your preference
 
-player1Score = []
-player2Score = []
-player3Score = []
-player4Score = []
+playerScore = [[], [], [], []]
 
 
 def show_message(message, x_pos, color):
@@ -45,6 +44,12 @@ def show_messageNoUpdate(message, x_pos, color):
     # Render the text as an image (surface)
     text = font.render(message, True, color)
     gameDisplay.blit(text, (x_pos, 1125))
+
+
+def show_messagePosition(message, x_pos, y_pos, color):
+    # Render the text as an image (surface)
+    text = font.render(message, True, color)
+    gameDisplay.blit(text, (x_pos, y_pos))
 
 
 def show_boxNoUpdate(size, position):
@@ -153,7 +158,7 @@ def slideChapter(chapter, pageReview):
 
 def slideCard(chapter, pageReview):
     # Initialize player setup
-    player_claim = [[], [], [], []]  # Track readiness for each player
+    player_claim = [[0], [0], [0], [0]]  # Track readiness for each player
     positionPlayer = [50, 50, 50, 50]
     player_keys = {
         pygame.K_a: "Player 1",  # 'A' for Player 1
@@ -178,17 +183,25 @@ def slideCard(chapter, pageReview):
         # Card item
         start_time = time.time()  # Start the timer for 30 seconds
         previous_time_left = None
-        while player_claim == [[], [], [], []]:
+        claim = False
+        while any(0 in claim for claim in player_claim):
+            show_box(
+                (800, 80), (1000, 1125)
+            )  # to remove the red text about the player already selected item
+
+            if claim == True:
+                break
             # show how much card left
             show_message(str(num_items) + " items left", 10, white)
-            show_message("image numero " + str(i), 300, white)
-            show_message(str(names[j]), 800, white)
+            # show_message("image numero " + str(i), 300, white)
+            # show_message(str(names[j]), 800, white)
             timeLeft = max(10 - int(time.time() - start_time), 0)
 
             if timeLeft != previous_time_left:
                 show_boxNoUpdate((100, 50), (1830, 1125))
                 show_messageNoUpdate(f"{timeLeft}s", 1830, white)
                 previous_time_left = timeLeft  # Update the previous time for comparison
+
             if timeLeft == 0:
                 break
 
@@ -201,98 +214,164 @@ def slideCard(chapter, pageReview):
                         player_index = list(player_keys.keys()).index(
                             event.key
                         )  # Get the player index
-                        if (
-                            len(player_claim[player_index]) == 0
-                        ):  # If the player hasn't pressed yet
+                        if player_claim[player_index] == [1]:
+                            gameDisplay.blit(image, (0, 0))
+                            show_box(box_size, box_position)
+                            show_message(
+                                f"{player_keys[event.key]} you already claimed a item !",
+                                1000,
+                                red,
+                            )
+                            pygame.time.wait(
+                                500
+                            )  # Add a small delay for smooth updates
+
+                        if player_claim[player_index] == [
+                            0
+                        ]:  # If the player hasn't pressed yet
 
                             gameDisplay.blit(image, (0, 0))
                             show_box(box_size, box_position)
-                            player_claim[player_index].append(1)
+                            player_claim[player_index] = [1]
                             show_message(
                                 f"{player_keys[event.key]} claim the item!",
-                                positionPlayer[player_index],
+                                50,
                                 green,
                             )  # Show confirmation message
-                            player1Score.append(names[j])
+                            playerScore[j].append(names[j])
                             j = j + 1
                             timeLeft = 0
+                            claim = True
+                            pygame.time.wait(
+                                2000
+                            )  # Add a small delay for smooth updates
+        if player_claim == [[1], [1], [1], [1]]:  # if everyone has already a item
+            i = pageReview + num_items
 
-        previous_time_left = None
+            show_box(box_size, box_position)
+            previous_time_left = None
+            start_time = time.time()
+            timeLeft = 1
+            while timeLeft > 0:
+                quitGame()
+                timeLeft = max(10 - int(time.time() - start_time), 0)
+                if timeLeft != previous_time_left:
+                    show_boxNoUpdate((1000, 80), (1000, 1125))
+                    show_messageNoUpdate(
+                        f"Everyone have a item so let's move on, next item on {timeLeft}s",
+                        1000,
+                        green,
+                    )
+                    previous_time_left = (
+                        timeLeft  # Update the previous time for comparison
+                    )
+                    pygame.display.update()
+
+            break
+
+        claim = False
+        previous_time_left = None  # when item is finish coutdown for the next part
         start_time = time.time()
-        timeLeft = 10
+        timeLeft = 1
         while timeLeft > 0:
             quitGame()
-            timeLeft = max(10 - int(time.time() - start_time), 0)
+            timeLeft = max(5 - int(time.time() - start_time), 0)
             if timeLeft != previous_time_left:
                 show_boxNoUpdate((500, 50), (1400, 1125))
                 show_messageNoUpdate(
-                    f"Time left before next item {timeLeft}s", 1400, white
+                    f"Time left before next item {timeLeft}s",
+                    1400,
+                    white,
                 )
                 previous_time_left = timeLeft  # Update the previous time for comparison
                 pygame.display.update()
         show_box(box_size, box_position)
-        player_claim = [[], [], [], []]
+
+
+def calculate_score_for_player(player_cards):
+    # Coefficients
+    coef_prix = 2
+    coef_eco_friendly = 3
+    score = 0
+    for card_name in player_cards:
+        # Chercher la carte dans components
+        found = False
+        for category, items in components.items():
+            for item in items:
+                if item["name"] == card_name:
+                    # Calculer le score en fonction des coefficients
+                    score += (
+                        item["prix"] * coef_prix
+                        + item["eco_friendly"] * coef_eco_friendly
+                    )
+                    found = True
+                    break
+            if found:
+                break
+    return score
 
 
 def showResult():
-    return
+    font = pygame.font.Font(None, 50)  # Adjust the font size as needed
+    show_box((1920, 1200), (0, 0))  # Clear the screen or display background
+    position = 50
+
+    # Initialize the list to store the scores of each player
+    scores = []  # This needs to be initialized before appending scores
+
+    # Calculate and display the scores for each player
+    for i, player_cards in enumerate(playerScore):
+        player_score = calculate_score_for_player(player_cards)
+        scores.append(player_score)  # Add the score to the scores list
+        print(f"Score du Joueur {i + 1}: {player_score}")
+        show_messageNoUpdate(
+            f"Score du Joueur {i + 1}: {player_score}", position, white
+        )
+        position = position + 500  # Adjust space between player score messages
+        pygame.display.update()
+
+    # Determine the winner by finding the maximum score
+    max_score = max(scores)
+    winner_index = scores.index(max_score)  # Get the index of the winner
+
+    # Display the winner's message
+    show_messagePosition(
+        f"Le gagnant est le Joueur {winner_index + 1} avec un score de {max_score}!",
+        540,
+        480,
+        green,
+    )
+    pygame.display.update()
+
+    # Wait for the player to close the window
+    waiting = True
+    while waiting:
+        quitGame()  # Check if the user wants to quit
 
 
-slideReady(1)
-slideReady(2)
+# Calculer et afficher le score de chaque joueur
 
 
-for i in range(0, 6):  # for 7 chapter
-    pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
-    chapter = list(components.keys())[i]
+# slideReady(1)
+# slideReady(2)
+#
+#
+# for i in range(0, 6):  # for 7 chapter
+#    pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
+#    chapter = list(components.keys())[i]
+#
+#    slideChapter(chapter, pageReview[i])
+#    slideCard(chapter, pageReview[i])
+#    # review
+#    # all item
+#
+i = 5
+pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
+chapter = list(components.keys())[i]
 
-    slideChapter(chapter, pageReview[i])
-    slideCard(chapter, pageReview[i])
-    # review
-    # all item
-
+# slideChapter(chapter, pageReview[i])
+slideCard(chapter, pageReview[i])
+calculate_score_for_player(playerScore)
 showResult()
 
-
-"""
-start_time = time.time()  # Start the timer for 10 seconds
-while time.time() - start_time < 10:  # Display each item for 10 seconds
-   screen.fill((255, 255, 255))  # Clear screen with white background
-
-            # Display current option's image and stats
-   screen.blit(
-   option["image_obj"], (100, 150)
-   )  # Adjust position for each image
-            font = pygame.font.Font(None, 36)
-            text = font.render(
-                f"{option['name']} (Aesthetics: {option['aesthetics']}, Durability: {option['durability']})",
-                True,
-                (0, 0, 0),
-            )
-            screen.blit(text, (300, 160))  # Position next to the image
-
-            pygame.display.flip()  # Update screen display
-
-            # Check for player input
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:  # Handle quit event
-                    pygame.quit()
-                    quit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_a:  # Player 1 presses 'A'
-                        choose_component(
-                            0, component_name, i
-                        )  # Player 1 claims the item
-                        continue
-                    elif event.key == pygame.K_z:  # Player 2 presses 'Z'
-                        choose_component(1, component_name, i)
-                        return
-                    elif event.key == pygame.K_e:  # Player 3 presses 'E'
-                        choose_component(2, component_name, i)
-                        return
-                    elif event.key == pygame.K_r:  # Player 4 presses 'R'
-                        choose_component(3, component_name, i)
-                        return
-
-"""
 pygame.quit()
