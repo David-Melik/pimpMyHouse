@@ -1,4 +1,5 @@
 import pygame
+
 import time
 
 from pygame.time import delay
@@ -11,7 +12,7 @@ pygame.init()
 
 # Set up the display
 gameDisplay = pygame.display.set_mode(
-    (1920, 1200)
+    (1920, 1200), pygame.FULLSCREEN
 )  # Set the screen size (width x height)
 pygame.display.set_caption("Pimp My House")  # Set the window caption
 
@@ -292,6 +293,8 @@ def calculate_score_for_player(player_cards):
     # Coefficients
     coef_prix = 2
     coef_eco_friendly = 3
+    coef_durability = 1
+    coef_energy_consumption = 1
     score = 0
     for card_name in player_cards:
         # Chercher la carte dans components
@@ -302,6 +305,8 @@ def calculate_score_for_player(player_cards):
                     # Calculer le score en fonction des coefficients
                     score += (
                         item["prix"] * coef_prix
+                        + item["durability"] * coef_durability
+                        + item["energy_consumption"] * coef_energy_consumption
                         + item["eco_friendly"] * coef_eco_friendly
                     )
                     found = True
@@ -352,8 +357,8 @@ def showResult():
 # Calculer et afficher le score de chaque joueur
 
 
-# slideReady(1)
-# slideReady(2)
+slideReady(1)
+slideReady(2)
 #
 #
 # for i in range(0, 6):  # for 7 chapter
