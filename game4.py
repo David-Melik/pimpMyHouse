@@ -64,7 +64,8 @@ def quitGame():
             quit()
 
 
-def slideReady(i):
+def slideReady(i, state):
+
     player_ready = [[], [], [], []]  # Track readiness for each player
     positionPlayer = [50, 505, 960, 1415]
     player_keys = {
@@ -76,12 +77,16 @@ def slideReady(i):
 
     image_filename = "image/" + str(i) + ".jpg"
     image = pygame.image.load(image_filename)
-    gameDisplay.blit(
-        image, (0, 0)
-    )  # Draw the image on the screen at coordinates (0, 0)
+    # Draw the image on the screen at coordinates (0, 0)
+
     pygame.display.update()
 
     while player_ready != [[1], [1], [1], [1]]:  # Check if everyone is ready
+        if state == "yes":
+            pygame.draw.rect(gameDisplay, white, pygame.Rect((0, 0), (1920, 1080)))
+            gameDisplay.blit(image, (448, 0))
+        if state == "no":
+            gameDisplay.blit(image, (0, 0))
         # Show instructions for players if they haven't pressed their button
         show_message(str(i), 10, white)
 
@@ -171,7 +176,7 @@ def slideCard(chapter, pageReview):
     # Initialize info about the Chapter
     items = components[chapter]
     names = [item["name"] for item in items]
-    num_items = len(items)
+    card_left = num_items = len(items)
     j = 0
     for i in range(pageReview + 1, pageReview + num_items):
 
@@ -193,7 +198,7 @@ def slideCard(chapter, pageReview):
             if claim == True:
                 break
             # show how much card left
-            show_message(str(num_items) + " items left", 10, white)
+            show_message(str(card_left) + " items left", 10, white)
             # show_message("image numero " + str(i), 300, white)
             # show_message(str(names[j]), 800, white)
             timeLeft = max(10 - int(time.time() - start_time), 0)
@@ -246,6 +251,7 @@ def slideCard(chapter, pageReview):
                             pygame.time.wait(
                                 2000
                             )  # Add a small delay for smooth updates
+        card_left = card_left - 1
         if player_claim == [[1], [1], [1], [1]]:  # if everyone has already a item
             i = pageReview + num_items
 
@@ -257,7 +263,7 @@ def slideCard(chapter, pageReview):
                 quitGame()
                 timeLeft = max(10 - int(time.time() - start_time), 0)
                 if timeLeft != previous_time_left:
-                    show_boxNoUpdate((1000, 80), (1000, 1125))
+                    show_boxNoUpdate((500, 80), (1500, 1125))
                     show_messageNoUpdate(
                         f"Everyone have a item so let's move on, next item on {timeLeft}s",
                         1000,
@@ -292,8 +298,9 @@ def slideCard(chapter, pageReview):
 def calculate_score_for_player(player_cards):
     # Coefficients
     coef_prix = 2
-    coef_eco_friendly = 3
     coef_durability = 1
+    coef_isolation = 1
+    coef_eco_friendly = 3
     coef_energy_consumption = 1
     score = 0
     for card_name in player_cards:
@@ -304,10 +311,12 @@ def calculate_score_for_player(player_cards):
                 if item["name"] == card_name:
                     # Calculer le score en fonction des coefficients
                     score += (
-                        item["prix"] * coef_prix
-                        + item["durability"] * coef_durability
-                        + item["energy_consumption"] * coef_energy_consumption
-                        + item["eco_friendly"] * coef_eco_friendly
+                        (item["prix"] * coef_prix)
+                        + (item["durability"] * coef_durability)
+                        + (item["isolation"] * coef_isolation)
+                        + (item["durability"] * coef_durability)
+                        + (item["eco_friendly"] * coef_eco_friendly)
+                        + (item["energy_consumption"] * coef_energy_consumption)
                     )
                     found = True
                     break
@@ -355,26 +364,29 @@ def showResult():
 
 
 # Calculer et afficher le score de chaque joueur
+"""
+slideReady(0, "yes")
 
+slideReady(1, "no")
+slideReady(2, "no")
+#
+#
 
-slideReady(1)
-slideReady(2)
-#
-#
-# for i in range(0, 6):  # for 7 chapter
-#    pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
-#    chapter = list(components.keys())[i]
-#
-#    slideChapter(chapter, pageReview[i])
-#    slideCard(chapter, pageReview[i])
-#    # review
-#    # all item
-#
+for i in range(0, 6):  # for 7 chapter
+    pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
+    chapter = list(components.keys())[i]
+
+    slideChapter(chapter, pageReview[i])
+    slideCard(chapter, pageReview[i])
+    # review
+    # all item
+"""
+
 i = 5
 pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
 chapter = list(components.keys())[i]
 
-# slideChapter(chapter, pageReview[i])
+slideChapter(chapter, pageReview[i])
 slideCard(chapter, pageReview[i])
 calculate_score_for_player(playerScore)
 showResult()
