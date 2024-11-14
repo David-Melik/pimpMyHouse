@@ -195,15 +195,6 @@ components = {
             "eco_friendly": 4,
             "image": "image/27.jpg",
         },
-        {
-            "name": "Bathroom MDF",
-            "prix": 3,
-            "durability": 2,
-            "isolation": 0,
-            "energy_consumption": 0,
-            "eco_friendly": 3,
-            "image": "image/28.jpg",
-        },
     ],
     "laundry_room": [
         {

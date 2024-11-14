@@ -360,7 +360,6 @@ def showResult():
 
 
 # Calculer et afficher le score de chaque joueur
-"""
 slideReady(0, "yes")
 
 slideReady(1, "no")
@@ -377,13 +376,13 @@ for i in range(0, 6):  # for 7 chapter
     # review
     # all item
 """
-
 i = 5
 pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
 chapter = list(components.keys())[i]
 
 slideChapter(chapter, pageReview[i])
 slideCard(chapter, pageReview[i])
+"""
 calculate_score_for_player(playerScore)
 showResult()
 

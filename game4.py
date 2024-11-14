@@ -140,6 +140,7 @@ def slideChapter(chapter, pageReview):
     image = pygame.image.load(image_filename)
     gameDisplay.blit(image, (0, 0))
     pygame.display.update()
+    show_box(box_size, box_position)
 
     # Initialize info about the Chapter
     items = components[chapter]
@@ -176,14 +177,17 @@ def slideCard(chapter, pageReview):
     # Initialize info about the Chapter
     items = components[chapter]
     names = [item["name"] for item in items]
-    card_left = num_items = len(items)
+    card_left = len(items)
+    num_items = len(items)
     j = 0
-    for i in range(pageReview + 1, pageReview + num_items):
+
+    for i in range(pageReview + 1, pageReview + num_items + 1):
 
         # Initialize image Review
         image_filename = "image/" + str(i) + ".jpg"
         image = pygame.image.load(image_filename)
         gameDisplay.blit(image, (0, 0))
+
         pygame.display.update()
 
         # Card item
@@ -198,7 +202,13 @@ def slideCard(chapter, pageReview):
             if claim == True:
                 break
             # show how much card left
-            show_message(str(card_left) + " items left", 10, white)
+            if card_left == 1:
+                show_message("It is the last one !", 10, white)
+            if card_left == 2:
+                show_message("Be careful just 2 item left", 10, white)
+
+            else:
+                show_message(str(card_left) + " items left", 10, white)
             # show_message("image numero " + str(i), 300, white)
             # show_message(str(names[j]), 800, white)
             timeLeft = max(10 - int(time.time() - start_time), 0)
@@ -296,25 +306,25 @@ def slideCard(chapter, pageReview):
 
 
 def calculate_score_for_player(player_cards):
-    # Coefficients
-    coef_prix = 2
-    coef_durability = 1
-    coef_isolation = 1
-    coef_eco_friendly = 3
-    coef_energy_consumption = 1
+    # Updated coefficients
+    coef_prix = 1.75
+    coef_durability = 1.75
+    coef_isolation = 1.5
+    coef_eco_friendly = 2
+    coef_energy_consumption = 1.5
     score = 0
+
     for card_name in player_cards:
-        # Chercher la carte dans components
+        # Search for the card in components
         found = False
         for category, items in components.items():
             for item in items:
                 if item["name"] == card_name:
-                    # Calculer le score en fonction des coefficients
+                    # Calculate the score using updated coefficients
                     score += (
                         (item["prix"] * coef_prix)
                         + (item["durability"] * coef_durability)
                         + (item["isolation"] * coef_isolation)
-                        + (item["durability"] * coef_durability)
                         + (item["eco_friendly"] * coef_eco_friendly)
                         + (item["energy_consumption"] * coef_energy_consumption)
                     )
@@ -369,7 +379,7 @@ slideReady(1, "no")
 slideReady(2, "no")
 
 
-for i in range(0, 6):  # for 7 chapter
+for i in range(0, 8):
     pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
     chapter = list(components.keys())[i]
 
@@ -377,8 +387,8 @@ for i in range(0, 6):  # for 7 chapter
     slideCard(chapter, pageReview[i])
     # review
     # all item
-
 """
+
 i = 5
 pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
 chapter = list(components.keys())[i]
@@ -386,6 +396,7 @@ chapter = list(components.keys())[i]
 slideChapter(chapter, pageReview[i])
 slideCard(chapter, pageReview[i])
 """
+
 calculate_score_for_player(playerScore)
 showResult()
 
