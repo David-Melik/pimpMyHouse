@@ -69,8 +69,8 @@ def slideReady(i, state):
     player_ready = [[], [], [], []]  # Track readiness for each player
     positionPlayer = [50, 505, 960, 1415]
     player_keys = {
-        pygame.K_a: "Player 1",  # 'A' for Player 1
-        pygame.K_z: "Player 2",  # 'Z' for Player 2
+        pygame.K_q: "Player 1",  # 'A' for Player 1
+        pygame.K_w: "Player 2",  # 'Z' for Player 2
         pygame.K_e: "Player 3",  # 'E' for Player 3
         pygame.K_r: "Player 4",  # 'R' for Player 4
     }
@@ -167,8 +167,8 @@ def slideCard(chapter, pageReview):
     player_claim = [[0], [0], [0], [0]]  # Track readiness for each player
     positionPlayer = [50, 50, 50, 50]
     player_keys = {
-        pygame.K_a: "Player 1",  # 'A' for Player 1
-        pygame.K_z: "Player 2",  # 'Z' for Player 2
+        pygame.K_q: "Player 1",  # 'A' for Player 1
+        pygame.K_w: "Player 2",  # 'Z' for Player 2
         pygame.K_e: "Player 3",  # 'E' for Player 3
         pygame.K_r: "Player 4",  # 'R' for Player 4
     }
@@ -363,14 +363,11 @@ def showResult():
         quitGame()  # Check if the user wants to quit
 
 
-# Calculer et afficher le score de chaque joueur
-"""
 slideReady(0, "yes")
 
 slideReady(1, "no")
 slideReady(2, "no")
-#
-#
+
 
 for i in range(0, 6):  # for 7 chapter
     pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
@@ -380,14 +377,15 @@ for i in range(0, 6):  # for 7 chapter
     slideCard(chapter, pageReview[i])
     # review
     # all item
-"""
 
+"""
 i = 5
 pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
 chapter = list(components.keys())[i]
 
 slideChapter(chapter, pageReview[i])
 slideCard(chapter, pageReview[i])
+"""
 calculate_score_for_player(playerScore)
 showResult()
 

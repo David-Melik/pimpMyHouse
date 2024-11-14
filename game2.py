@@ -69,8 +69,8 @@ def slideReady(i, state):
     player_ready = [[], []]  # Track readiness for each player
     positionPlayer = [505, 960]
     player_keys = {
-        pygame.K_a: "Player 1",  # 'A' for Player 1
-        pygame.K_z: "Player 2",  # 'Z' for Player 2
+        pygame.K_q: "Player 1",  # 'A' for Player 1
+        pygame.K_w: "Player 2",  # 'Z' for Player 2
     }
 
     image_filename = "image/" + str(i) + ".jpg"
@@ -165,8 +165,8 @@ def slideCard(chapter, pageReview):
     player_claim = [[0], [0]]  # Track readiness for each player
     positionPlayer = [50, 50]
     player_keys = {
-        pygame.K_a: "Player 1",  # 'A' for Player 1
-        pygame.K_z: "Player 2",  # 'Z' for Player 2
+        pygame.K_q: "Player 1",  # 'A' for Player 1
+        pygame.K_w: "Player 2",  # 'Z' for Player 2
     }
 
     # Initialize info about the Chapter
