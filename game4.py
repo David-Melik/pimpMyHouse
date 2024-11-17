@@ -20,6 +20,7 @@ green = (0, 152, 5)
 red = (219, 63, 16)
 black = (0, 0, 0)
 white = (255, 255, 255)
+yellow = (255, 229, 89)
 box_position = (0, 1080)  # Top-left corner of the box
 box_size = (1920, 120)
 
@@ -38,6 +39,11 @@ def show_message(message, x_pos, color):
 
 def show_box(size, position):
     pygame.draw.rect(gameDisplay, black, pygame.Rect(position, size))
+    pygame.display.update()
+
+
+def show_box_color(size, position, color):
+    pygame.draw.rect(gameDisplay, color, pygame.Rect(position, size))
     pygame.display.update()
 
 
@@ -211,7 +217,7 @@ def slideCard(chapter, pageReview):
                 show_message(str(card_left) + " items left", 10, white)
             # show_message("image numero " + str(i), 300, white)
             # show_message(str(names[j]), 800, white)
-            timeLeft = max(10 - int(time.time() - start_time), 0)
+            timeLeft = max(2 - int(time.time() - start_time), 0)
 
             if timeLeft != previous_time_left:
                 show_boxNoUpdate((100, 50), (1830, 1125))
@@ -254,7 +260,7 @@ def slideCard(chapter, pageReview):
                                 50,
                                 green,
                             )  # Show confirmation message
-                            playerScore[j].append(names[j])
+                            playerScore[player_index].append(names[j])
                             j = j + 1
                             timeLeft = 0
                             claim = True
@@ -271,7 +277,8 @@ def slideCard(chapter, pageReview):
             timeLeft = 1
             while timeLeft > 0:
                 quitGame()
-                timeLeft = max(10 - int(time.time() - start_time), 0)
+                timeLeft = max(0 - int(time.time() - start_time), 0)
+
                 if timeLeft != previous_time_left:
                     show_boxNoUpdate((500, 80), (1500, 1125))
                     show_messageNoUpdate(
@@ -350,88 +357,125 @@ def calculate_score_for_player(player_cards, scoreState):
 
 
 def showResult():
-    image_filename = "image/coefficient.png"
-    image = pygame.image.load(image_filename)
-    gameDisplay.blit(image, (0, 500))
-    pygame.display.update()
-
     image_filename = "image/final.jpg"
     image = pygame.image.load(image_filename)
     gameDisplay.blit(image, (0, 0))
     pygame.display.update()
+    image_filename = "image/coefficient.png"
+    image = pygame.image.load(image_filename)
+    gameDisplay.blit(image, (1660, 0))
+    pygame.display.update()
+
+    show_box(box_size, box_position)
+    # show_box_color(box_size, box_position, yellow)
 
     font = pygame.font.Font(None, 50)  # Adjust the font size as needed
-    show_box((1920, 1200), (0, 0))  # Clear the screen or display background
-    positionX = 50
 
     # Initialize the list to store the scores of each player
     scores = []  # This needs to be initialized before appending scores
 
     # Calculate and display the scores for each player
+    score_breakdown = []
+    # Calculate scores and breakdowns for each player
+    print(f"player score {playerScore}")
     for i, player_cards in enumerate(playerScore):
         player_score = calculate_score_for_player(player_cards, True)
         scores.append(player_score)  # Add the score to the scores list
         print(f"Player {i + 1}'s Score: {player_score}")
-        show_messageNoUpdate(
-            f"Player {i + 1}'s Score: {player_score}", positionX, white
-        )
+        score_breakdown.append(calculate_score_for_player(playerScore[i], False))
+        print(f"Player {i + 1}'s score_breakdown: {score_breakdown}")
 
-        positionX = positionX + 500  # Adjust space between player score messages
-        pygame.display.update()
+    # Combine player index, scores, and breakdowns into a single structure
+    combined_scores = [(i, scores[i], score_breakdown[i]) for i in range(len(scores))]
+    # Sort by score, keeping breakdown and player index
+    sorted_scores = sorted(combined_scores, key=lambda x: x[1], reverse=True)
+    print(f"sorted score{combined_scores}")
 
-    # Determine rankings
-    sorted_scores = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)
-    positionY = 250
-    positionX = 50
+    print(sorted_scores)
+    positionY = 280
+    positionX = 140
+    line_height = 35  # Adjust based on your font size and spacing
+
     # Announce the rankings
-    # Announce rankings and show score details
-    # Announce rankings and show score details
-    for rank, (player_index, score) in enumerate(sorted_scores, start=1):
+    for rank in range(len(sorted_scores)):
         # Get the detailed breakdown of how the score was calculated
-        score_breakdown = calculate_score_for_player(
-            playerScore[player_index], False
-        )  # Should return a breakdown like "15 from cards, 10 from bonus"
-
-        if rank == 1:
+        item = sorted_scores[rank]
+        scorePointBreak = item[2]
+        if rank == 0:
             # Announce the winner
-            print(f"Player {player_index + 1} wins with a score of {score}!")
+            print(f"Player {item[0] +1 } wins with a score of {item[1]}!")
+            print(f"Breakdown: {item[2]}")
             show_messagePosition(
-                f"Player {player_index + 1} wins with a score of {score}!",
+                f"Player {item[0] +1  }",
                 positionX,
                 positionY,
-                white,
+                green,
+            )
+            show_messagePosition(
+                f" wins with a score of {item[1]}!",
+                positionX,
+                positionY + line_height,
+                black,
             )
         else:
             # Announce other rankings
-            print(f"{rank} place: Player {player_index + 1} with a score of {score}")
+            print(f"{rank} place: Player {item[0] + 1} with a score of {item[2]}")
+            print(f"Breakdown: {score_breakdown}")
             show_messagePosition(
-                f"{rank} place: Player {player_index + 1} with a score of {score}",
+                f"Player {item[0]+1}",
                 positionX,
                 positionY,
-                white,
+                green,
             )
-
+            show_messagePosition(
+                f"with a score of {item[1]}!",
+                positionX,
+                positionY + line_height,
+                black,
+            )
+        positionY += 50
         # Display the detailed score breakdown
         print(f"Breakdown: {score_breakdown}")
+        show_messagePosition(f"Breakdown:", positionX, positionY + 50, red)
         show_messagePosition(
-            f"Breakdown: price {score_breakdown[0]}, durability {score_breakdown[1]}, "
-            f"isolation {score_breakdown[2]}, eco {score_breakdown[3]}, energy {score_breakdown[4]}",
-            positionX,
-            positionY + 50,  # Offset for breakdown
-            white,
+            f"Price: {scorePointBreak[0]}",
+            positionX + 20,
+            positionY + 50 + line_height,
+            black,
+        )
+        show_messagePosition(
+            f"Energy: {scorePointBreak[4]}",
+            positionX + 20,
+            positionY + 50 + 5 * line_height,
+            black,
+        )
+        show_messagePosition(
+            f"Durability: {scorePointBreak[1]}",
+            positionX + 20,
+            positionY + 50 + 2 * line_height,
+            black,
+        )
+        show_messagePosition(
+            f"Eco-friendly: {scorePointBreak[3]}",
+            positionX + 20,
+            positionY + 50 + 4 * line_height,
+            black,
+        )
+        show_messagePosition(
+            f"Isolation: {scorePointBreak[2]}",
+            positionX + 20,
+            positionY + 50 + 3 * line_height,
+            black,
         )
 
         # Adjust positions for the next player's announcement
-        positionX += 500
-        positionY += 250
+        if (rank == 0) or (rank == 2):
+            positionX += 450
+            positionY += 100
+        else:
+            positionX += 480
+            positionY += 100
         pygame.display.update()
-
-    image_filename = "image/coefficient.png"
-    image = pygame.image.load(image_filename)
-    gameDisplay.blit(image, (0, 500))
-    pygame.display.update()
-    # Display the winner's message
-
     pygame.display.update()
 
     # Wait for the player to close the window
@@ -456,16 +500,13 @@ for i in range(0, 8):
     # review
     # all item
 """
-"""
 
 i = 5
 pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
 chapter = list(components.keys())[i]
 
-slideChapter(chapter, pageReview[i])
+# slideChapter(chapter, pageReview[i])
 slideCard(chapter, pageReview[i])
-"""
-
 showResult()
 
 pygame.quit()

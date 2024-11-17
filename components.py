@@ -256,10 +256,10 @@ components = {
         {
             "name": "Living Room Industrial",
             "prix": 3,
-            "durability": 5,
+            "durability": 3,
             "isolation": 0,
             "energy_consumption": 0,
-            "eco_friendly": 4,
+            "eco_friendly": 3,
             "image": "image/36.jpg",
         },
         {
@@ -312,10 +312,10 @@ components = {
         {
             "name": "Master Bedroom Industrial",
             "prix": 3,
-            "durability": 5,
+            "durability": 3,
             "isolation": 0,
             "energy_consumption": 0,
-            "eco_friendly": 4,
+            "eco_friendly": 3,
             "image": "image/43.jpg",
         },
         {
