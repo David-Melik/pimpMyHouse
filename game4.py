@@ -78,7 +78,7 @@ def slideReady(i, state):
     image_filename = "image/" + str(i) + ".jpg"
     image = pygame.image.load(image_filename)
     # Draw the image on the screen at coordinates (0, 0)
-
+    gameDisplay.blit(image, (0, 0))
     pygame.display.update()
 
     while player_ready != [[1], [1], [1], [1]]:  # Check if everyone is ready
@@ -204,8 +204,8 @@ def slideCard(chapter, pageReview):
             # show how much card left
             if card_left == 1:
                 show_message("It is the last one !", 10, white)
-            if card_left == 2:
-                show_message("Be careful just 2 item left", 10, white)
+            elif card_left == 2:
+                show_message("Be careful, just 2 item left", 10, white)
 
             else:
                 show_message(str(card_left) + " items left", 10, white)
@@ -305,7 +305,7 @@ def slideCard(chapter, pageReview):
         show_box(box_size, box_position)
 
 
-def calculate_score_for_player(player_cards):
+def calculate_score_for_player(player_cards, scoreState):
     # Updated coefficients
     coef_prix = 1.75
     coef_durability = 1.75
@@ -314,13 +314,16 @@ def calculate_score_for_player(player_cards):
     coef_energy_consumption = 1.5
     score = 0
 
+    # Initialize scorePoint to store sums of each attribute
+    scorePoint = [0, 0, 0, 0, 0]  # Position 1=prix, Position 2=durability, etc.
+
     for card_name in player_cards:
         # Search for the card in components
         found = False
         for category, items in components.items():
             for item in items:
                 if item["name"] == card_name:
-                    # Calculate the score using updated coefficients
+                    # Add the value to the appropriate attribute sum using updated coefficients
                     score += (
                         (item["prix"] * coef_prix)
                         + (item["durability"] * coef_durability)
@@ -328,42 +331,106 @@ def calculate_score_for_player(player_cards):
                         + (item["eco_friendly"] * coef_eco_friendly)
                         + (item["energy_consumption"] * coef_energy_consumption)
                     )
+                    # Add to the corresponding scorePoint values
+                    scorePoint[0] += item["prix"]
+                    scorePoint[1] += item["durability"]
+                    scorePoint[2] += item["isolation"]
+                    scorePoint[3] += item["eco_friendly"]
+                    scorePoint[4] += item["energy_consumption"]
                     found = True
                     break
             if found:
                 break
-    return score
+
+    if scoreState:
+        return score
+    else:
+        # Return the total values for each attribute
+        return scorePoint
 
 
 def showResult():
+    image_filename = "image/coefficient.png"
+    image = pygame.image.load(image_filename)
+    gameDisplay.blit(image, (0, 500))
+    pygame.display.update()
+
+    image_filename = "image/final.jpg"
+    image = pygame.image.load(image_filename)
+    gameDisplay.blit(image, (0, 0))
+    pygame.display.update()
+
     font = pygame.font.Font(None, 50)  # Adjust the font size as needed
     show_box((1920, 1200), (0, 0))  # Clear the screen or display background
-    position = 50
+    positionX = 50
 
     # Initialize the list to store the scores of each player
     scores = []  # This needs to be initialized before appending scores
 
     # Calculate and display the scores for each player
     for i, player_cards in enumerate(playerScore):
-        player_score = calculate_score_for_player(player_cards)
+        player_score = calculate_score_for_player(player_cards, True)
         scores.append(player_score)  # Add the score to the scores list
         print(f"Player {i + 1}'s Score: {player_score}")
-        show_messageNoUpdate(f"Player {i + 1}'s Score: {player_score}", position, white)
+        show_messageNoUpdate(
+            f"Player {i + 1}'s Score: {player_score}", positionX, white
+        )
 
-        position = position + 500  # Adjust space between player score messages
+        positionX = positionX + 500  # Adjust space between player score messages
         pygame.display.update()
 
-    # Determine the winner by finding the maximum score
-    max_score = max(scores)
-    winner_index = scores.index(max_score)  # Get the index of the winner
+    # Determine rankings
+    sorted_scores = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)
+    positionY = 250
+    positionX = 50
+    # Announce the rankings
+    # Announce rankings and show score details
+    # Announce rankings and show score details
+    for rank, (player_index, score) in enumerate(sorted_scores, start=1):
+        # Get the detailed breakdown of how the score was calculated
+        score_breakdown = calculate_score_for_player(
+            playerScore[player_index], False
+        )  # Should return a breakdown like "15 from cards, 10 from bonus"
 
+        if rank == 1:
+            # Announce the winner
+            print(f"Player {player_index + 1} wins with a score of {score}!")
+            show_messagePosition(
+                f"Player {player_index + 1} wins with a score of {score}!",
+                positionX,
+                positionY,
+                white,
+            )
+        else:
+            # Announce other rankings
+            print(f"{rank} place: Player {player_index + 1} with a score of {score}")
+            show_messagePosition(
+                f"{rank} place: Player {player_index + 1} with a score of {score}",
+                positionX,
+                positionY,
+                white,
+            )
+
+        # Display the detailed score breakdown
+        print(f"Breakdown: {score_breakdown}")
+        show_messagePosition(
+            f"Breakdown: price {score_breakdown[0]}, durability {score_breakdown[1]}, "
+            f"isolation {score_breakdown[2]}, eco {score_breakdown[3]}, energy {score_breakdown[4]}",
+            positionX,
+            positionY + 50,  # Offset for breakdown
+            white,
+        )
+
+        # Adjust positions for the next player's announcement
+        positionX += 500
+        positionY += 250
+        pygame.display.update()
+
+    image_filename = "image/coefficient.png"
+    image = pygame.image.load(image_filename)
+    gameDisplay.blit(image, (0, 500))
+    pygame.display.update()
     # Display the winner's message
-    show_messagePosition(
-        f"The winner is Player {winner_index + 1} with a score of {max_score}!",
-        540,
-        480,
-        green,
-    )
 
     pygame.display.update()
 
@@ -373,8 +440,9 @@ def showResult():
         quitGame()  # Check if the user wants to quit
 
 
+# -----------------------------------------------
+"""
 slideReady(0, "yes")
-
 slideReady(1, "no")
 slideReady(2, "no")
 
@@ -388,6 +456,7 @@ for i in range(0, 8):
     # review
     # all item
 """
+"""
 
 i = 5
 pageReview = [3, 8, 15, 22, 28, 35, 42, 49]
@@ -397,7 +466,6 @@ slideChapter(chapter, pageReview[i])
 slideCard(chapter, pageReview[i])
 """
 
-calculate_score_for_player(playerScore)
 showResult()
 
 pygame.quit()
