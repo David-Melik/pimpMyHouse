@@ -217,7 +217,7 @@ def slideCard(chapter, pageReview):
                 show_message(str(card_left) + " items left", 10, white)
             # show_message("image numero " + str(i), 300, white)
             # show_message(str(names[j]), 800, white)
-            timeLeft = max(2 - int(time.time() - start_time), 0)
+            timeLeft = max(10 - int(time.time() - start_time), 0)
 
             if timeLeft != previous_time_left:
                 show_boxNoUpdate((100, 50), (1830, 1125))
@@ -277,7 +277,7 @@ def slideCard(chapter, pageReview):
             timeLeft = 1
             while timeLeft > 0:
                 quitGame()
-                timeLeft = max(0 - int(time.time() - start_time), 0)
+                timeLeft = max(10 - int(time.time() - start_time), 0)
 
                 if timeLeft != previous_time_left:
                     show_boxNoUpdate((500, 80), (1500, 1125))
@@ -299,7 +299,7 @@ def slideCard(chapter, pageReview):
         timeLeft = 1
         while timeLeft > 0:
             quitGame()
-            timeLeft = max(5 - int(time.time() - start_time), 0)
+            timeLeft = max(10 - int(time.time() - start_time), 0)
             if timeLeft != previous_time_left:
                 show_boxNoUpdate((500, 50), (1400, 1125))
                 show_messageNoUpdate(
@@ -485,7 +485,6 @@ def showResult():
 
 
 # -----------------------------------------------
-"""
 slideReady(0, "yes")
 slideReady(1, "no")
 slideReady(2, "no")
@@ -507,6 +506,8 @@ chapter = list(components.keys())[i]
 
 # slideChapter(chapter, pageReview[i])
 slideCard(chapter, pageReview[i])
+"""
+
 showResult()
 
 pygame.quit()
